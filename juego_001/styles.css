@@ -1,0 +1,142 @@
+
+body{
+      overflow: hidden;
+      background-color: black;
+      margin: 0;
+}
+
+header {
+      background-color: #222;
+      border: 10px solid #f3f3f3;
+      position: fixed;
+      height: 90px;
+      top: 0;
+      width: 97%;
+      padding: 10px 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 60px;
+      z-index: 1000;
+}
+
+button.pnav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+}
+
+button.pnav-btn img {
+      width: 80px;
+      height: 80px;
+      transition: transform 3.0%;
+}
+
+button.pnav-btn:hover img {
+      transform: scale(1.1);
+      content: url("media/boton_01.gif");
+      
+}
+
+button.unav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+}
+
+button.unav-btn img {
+      width: 80px;
+      height: 80px;
+      transition: transform 3.0%;
+}
+
+button.unav-btn:hover img {
+      transform: scale(1.1);
+      content: url("media/bonton_02.gif");
+      
+}
+
+#computador {
+      height: 100vh;
+      overflow-y: auto;
+}
+
+.flex-computador {
+      flex: 1;
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 0;
+      padding-top: 90px;
+      display: flex;
+      gap: 30px;
+      align-items: center;
+}
+
+.parte_derecha {
+      width: 70%;
+}
+
+.parte_izquierda {
+      padding: 20px;
+      background-size: cover;
+      background-position: center center;
+      width: 600px;
+      position: relative;
+}
+
+.pizarra_01 {
+      width: 100%;
+      display: block;
+}
+
+.buton {
+      position: absolute;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 0;
+}
+
+#btn1 {
+      top: 20%;
+      left: 20%;
+}
+
+#btn2 {
+      top: 50%;
+      left: 45%;
+}
+
+#btn3 {
+      top: 75%;
+      left: 65%;
+}
+
+.buton img{
+      width: 100px;
+      height: 100px;
+      transition: transform 3.0%;
+}
+
+.buton img:hover{
+      transform: scale(1.1);
+      content: url("media/archivo_activo.png");
+}
+
+#dialoge_box {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 97%;
+      background-color: #545454;
+      color: white;
+      border: 10px solid #f3f3f3;
+      padding: 20px 0;
+      font-size: 30px;
+      font-family: 'VT323';
+      text-align: center;
+      z-index: 1000;
+}
