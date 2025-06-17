@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego Point-and-Click</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+    }
+
+    section {
+      display: none;
+      position: relative;
+      width: 800px;
+      height: 500px;
+      margin: 20px auto;
+      background-size: cover;
+      border: 4px solid #555;
+      box-shadow: 0 0 10px black;
+    }
+
+    .object {
+      position: absolute;
+      pointer-events: auto;
+    }
+
+    .clickable {
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .clickable:hover {
+      border: 2px solid yellow;
+    }
+
+    #dialogue-box {
+      width: 800px;
+      margin: 0 auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    #terminal {
+      display: none;
+      position: fixed;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      background: #111;
+      border: 2px solid #0f0;
+      color: #0f0;
+      font-family: monospace;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    #terminal input {
+      width: 100%;
+      background: black;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    #terminal button {
+      margin-top: 10px;
+      padding: 5px 15px;
+      background: #0f0;
+      color: black;
+      border: none;
+      cursor: pointer;
+    }
+
+    #terminal button:hover {
+      background: #9f9;
+    }
+
+    .switch-room {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: #333;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .switch-room:hover {
+      background: #555;
+    }
+
+    #openDoorBtn {
+      position: absolute;
+      top: 310px;
+      left: 610px;
+      padding: 8px 12px;
+      background: #444;
+      border: none;
+      color: white;
+      display: none;
+      cursor: pointer;
+    }
+
+    #openDoorBtn:hover {
+      background: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sección 1: Computadora -->
+  <section id="room1" style="background-image: url('https://i.imgur.com/eN7Z9NB.jpg'); display: block;">
+    <img src="https://i.imgur.com/y1Z0lNe.png" alt="Computadora" class="object clickable"
+         style="top: 300px; left: 300px; width: 80px;" onclick="openTerminal()">
+
+    <img src="https://i.imgur.com/njV1Pv8.png" alt="Nota 1" class="object clickable"
+         style="top: 100px; left: 100px; width: 60px;" onclick="readNote1()">
+
+    <img src="https://i.imgur.com/njV1Pv8.png" alt="Nota 2" class="object clickable"
+         style="top: 150px; left: 500px; width: 60px;" onclick="readNote2()">
+
+    <img src="https://i.imgur.com/njV1Pv8.png" alt="Nota 3" class="object clickable"
+         style="top: 50px; left: 250px; width: 60px;" onclick="readNote3()">
+
+    <button class="switch-room" onclick="switchRoom('room2')">Ir a la puerta →</button>
+  </section>
+
+  <!-- Sección 2: Puerta -->
+  <section id="room2" style="background-image: url('https://i.imgur.com/eN7Z9NB.jpg');">
+    <!-- Puerta decorativa, no clickeable -->
+    <img id="door" src="https://i.imgur.com/7rqqTli.png" alt="Puerta cerrada" class="object"
+         style="top: 200px; left: 600px; width: 100px;">
+    
+    <!-- Solo el botón puede abrirla -->
+    <button id="openDoorBtn" onclick="abrirPuerta()">Abrir puerta</button>
+    
+    <button class="switch-room" onclick="switchRoom('room1')">← Volver a la computadora</button>
+  </section>
+
+  <!-- Diálogo -->
+  <div id="dialogue-box">Haz clic en un objeto para interactuar.</div>
+
+  <!-- Terminal -->
+  <div id="terminal">
+    <div>🔒 Terminal segura</div>
+    <p>Introduce la contraseña:</p>
+    <input type="password" id="passwordInput" placeholder="Contraseña...">
+    <button onclick="checkPassword()">Acceder</button>
+    <button onclick="closeTerminal()">Cerrar</button>
+  </div>
+
+  <script>
+    let puertaAbierta = false;
+    let puertaDesbloqueada = false;
+
+    function switchRoom(roomId) {
+      document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
+      document.getElementById(roomId).style.display = "block";
+
+      if (roomId === "room2") {
+        const btn = document.getElementById("openDoorBtn");
+        const puerta = document.getElementById("door");
+
+        if (puertaAbierta) {
+          puerta.src = "https://i.imgur.com/GZ6KBR9.png";
+          btn.style.display = "none";
+          showMessage("La puerta está abierta.");
+        } else if (puertaDesbloqueada) {
+          btn.style.display = "inline-block";
+          showMessage("La puerta está desbloqueada. Pulsa el botón para abrirla.");
+        } else {
+          btn.style.display = "none";
+          showMessage("La puerta está cerrada. Encuentra la contraseña.");
+        }
+      }
+    }
+
+    function showMessage(message, autoReset = true) {
+      const box = document.getElementById("dialogue-box");
+      box.textContent = message;
+
+      if (autoReset) {
+        clearTimeout(showMessage.timeout);
+        showMessage.timeout = setTimeout(() => {
+          box.textContent = "Haz clic en un objeto para interactuar.";
+        }, 3000);
+      }
+    }
+
+    function openTerminal() {
+      document.getElementById("terminal").style.display = "block";
+      showMessage("Terminal abierta.", false);
+    }
+
+    function closeTerminal() {
+      document.getElementById("terminal").style.display = "none";
+    }
+
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value.trim().toLowerCase();
+      if (input === "dragón") {
+        showMessage("¡Contraseña correcta! Puedes abrir la puerta.");
+        puertaDesbloqueada = true;
+        closeTerminal();
+      } else {
+        showMessage("Contraseña incorrecta.");
+      }
+    }
+
+    function abrirPuerta() {
+      if (puertaDesbloqueada) {
+        const puerta = document.getElementById("door");
+        puerta.src = "https://i.imgur.com/GZ6KBR9.png"; // imagen de puerta abierta
+        puertaAbierta = true;
+        document.getElementById("openDoorBtn").style.display = "none";
+        showMessage("¡Has abierto la puerta!");
+      }
+    }
+
+    function readNote1() {
+      showMessage("La nota dice: 'La contraseña es: dragón'");
+    }
+
+    function readNote2() {
+      showMessage("La nota dice: 'No mires aquí. Esta pista es falsa.'");
+    }
+
+    function readNote3() {
+      showMessage("La nota dice: '¿Contraseña 1234? Eso sería muy obvio...'");
+    }
+  </script>
+
+</body>
+</html>
